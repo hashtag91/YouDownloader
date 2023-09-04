@@ -181,11 +181,13 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setObjectName("comboBox")
         self.comboBox.hide()
+        self.comboBox.currentTextChanged.connect(self.videoTypeAction)
         self.horizontalLayout_5.addWidget(self.comboBox)
         self.resolutionCombo = QtWidgets.QComboBox(self.centralwidget)
         self.resolutionCombo.setMaximumSize(QtCore.QSize(11111, 20))
         self.resolutionCombo.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         self.resolutionCombo.setObjectName("resolutionCombo")
+        self.resolutionCombo.currentTextChanged.connect(self.resComboAction)
         self.resolutionCombo.hide()
         self.horizontalLayout_5.addWidget(self.resolutionCombo)
         self.horizontalLayout_5.setStretch(0, 1)
@@ -313,6 +315,10 @@ class Ui_MainWindow(object):
         else:
             self.yt = Download(self.url.text())
             videoTitle = self.yt.VideoTitle()
+            self.videoRes = self.yt.resList()
+            self.videoType = self.yt.videoType()
+            self.resolutionCombo.addItems(self.videoRes)
+            self.comboBox.addItems(self.videoType)
             self.titleText.show()
             self.tiltle.show()
             self.tiltle.setText(videoTitle)
@@ -324,8 +330,27 @@ class Ui_MainWindow(object):
             self.resolutionCombo.show()
             self.fileLine.show()
             self.fileBtn.show()
-            
-
+    def resComboAction(self):
+        videoRes = self.yt.resList()
+        if self.resolutionCombo.currentText() == videoRes[0]:
+            self.videoType = [self.yt.videoType()[0]]
+            self.comboBox.clear()
+            self.comboBox.addItems(self.videoType)
+        else:
+            self.videoType = self.yt.videoType()[1::]
+            self.comboBox.clear()
+            self.comboBox.addItems(self.videoType)
+        self.itag = self.yt.itag()
+        for it in self.itag:
+            if self.resolutionCombo.currentText() in it and self.comboBox.currentText() in it :
+                print(it[0])
+                break
+    def videoTypeAction(self):
+        self.itag = self.yt.itag()
+        for it in self.itag:
+            if self.resolutionCombo.currentText() in it and self.comboBox.currentText() in it :
+                print(it[0])
+                break
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
