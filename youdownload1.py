@@ -302,10 +302,11 @@ class Ui_MainWindow(object):
         self.donwloadBtn.setText(_translate("MainWindow", "Télécharger"))
 
     def fileDialog(self):
+        self.yt = Download(self.url.text())
         dialog = QtWidgets.QFileDialog()
         dialog.setFileMode(QtWidgets.QFileDialog.Directory)
         output = dialog.getExistingDirectory(caption='Selectionner un dossier',directory='C:/')
-        self.fileLine.setText(output)
+        self.fileLine.setText(f"{output}/{self.yt.VideoTitle()}")
     def checkFunc(self):
         if self.url.text() == "":
             self.urlMsg = QtWidgets.QMessageBox()
@@ -343,13 +344,15 @@ class Ui_MainWindow(object):
         self.itag = self.yt.itag()
         for it in self.itag:
             if self.resolutionCombo.currentText() in it and self.comboBox.currentText() in it :
-                print(it[0])
+                size = round(((self.yt.streams.get_by_itag(it[0]).filesize/1024)/1024),1)
+                self.taille.setText(f"{size} Mo")
                 break
     def videoTypeAction(self):
         self.itag = self.yt.itag()
         for it in self.itag:
             if self.resolutionCombo.currentText() in it and self.comboBox.currentText() in it :
-                print(it[0])
+                size = int((self.yt.streams.get_by_itag(it[0]).filesize/1024)/1024)
+                self.taille.setText(f"{size} Mo")
                 break
 if __name__ == "__main__":
     import sys
