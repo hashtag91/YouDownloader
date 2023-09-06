@@ -264,6 +264,8 @@ class Ui_MainWindow(object):
         self.donwloadBtn.setIcon(icon)
         self.donwloadBtn.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.donwloadBtn.setObjectName("donwloadBtn")
+        self.donwloadBtn.clicked.connect(self.downloadAction)
+        self.donwloadBtn.setDisabled(True)
         self.horizontalLayout_9.addWidget(self.donwloadBtn)
         self.verticalLayout_3.addLayout(self.horizontalLayout_9)
         self.verticalLayout.addLayout(self.verticalLayout_3)
@@ -306,7 +308,8 @@ class Ui_MainWindow(object):
         dialog = QtWidgets.QFileDialog()
         dialog.setFileMode(QtWidgets.QFileDialog.Directory)
         output = dialog.getExistingDirectory(caption='Selectionner un dossier',directory='C:/')
-        self.fileLine.setText(f"{output}/{self.yt.VideoTitle()}")
+        self.fileLine.setText(f"{output}")
+        return output
     def checkFunc(self):
         if self.url.text() == "":
             self.urlMsg = QtWidgets.QMessageBox()
@@ -331,6 +334,7 @@ class Ui_MainWindow(object):
             self.resolutionCombo.show()
             self.fileLine.show()
             self.fileBtn.show()
+            self.donwloadBtn.setEnabled(True)
     def resComboAction(self):
         videoRes = self.yt.resList()
         if self.resolutionCombo.currentText() == videoRes[0]:
@@ -353,6 +357,22 @@ class Ui_MainWindow(object):
             if self.resolutionCombo.currentText() in it and self.comboBox.currentText() in it :
                 size = int((self.yt.streams.get_by_itag(it[0]).filesize/1024)/1024)
                 self.taille.setText(f"{size} Mo")
+                break
+    def downloadAction(self):
+        self.itag = self.yt.itag()
+        for it in self.itag:
+            if self.resolutionCombo.currentText() in it and self.comboBox.currentText() in it:
+                stream = self.yt.youtube_video.streams.get_by_itag(it[0])
+                if self.fileLine.text() == "":
+                    filename = self.fileDialog()
+                    self.fileLine.setText(f"{filename}")
+                if self.fileLine.text() != "":
+                    self.label_8.show()
+                    self.label_7.show()
+                    self.telecharge.show()
+                    self.restant.show()
+                    self.progressBar.show()
+                    stream.download(self.fileLine.text())
                 break
 if __name__ == "__main__":
     import sys
