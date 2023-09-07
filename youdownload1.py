@@ -255,6 +255,7 @@ class Ui_MainWindow(object):
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.progressBar.setProperty("value", 24)
         self.progressBar.setObjectName("progressBar")
+        self.progressBar.setValue(0)
         self.progressBar.hide()
         self.verticalLayout_3.addWidget(self.progressBar)
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
@@ -311,6 +312,8 @@ class Ui_MainWindow(object):
         self.fileLine.setText(f"{output}")
         return output
     def checkFunc(self):
+        self.resolutionCombo.clear()
+        self.comboBox.clear()
         if self.url.text() == "":
             self.urlMsg = QtWidgets.QMessageBox()
             self.urlMsg.setWindowTitle('Information')
@@ -335,6 +338,7 @@ class Ui_MainWindow(object):
             self.fileLine.show()
             self.fileBtn.show()
             self.donwloadBtn.setEnabled(True)
+            QtWidgets.QApplication.processEvents()
     def resComboAction(self):
         videoRes = self.yt.resList()
         if self.resolutionCombo.currentText() == videoRes[0]:
@@ -362,7 +366,7 @@ class Ui_MainWindow(object):
         self.itag = self.yt.itag()
         for it in self.itag:
             if self.resolutionCombo.currentText() in it and self.comboBox.currentText() in it:
-                stream = self.yt.youtube_video.streams.get_by_itag(it[0])
+                stream1 = self.yt.youtube_video.streams.get_by_itag(it[0])
                 if self.fileLine.text() == "":
                     filename = self.fileDialog()
                     self.fileLine.setText(f"{filename}")
@@ -372,8 +376,21 @@ class Ui_MainWindow(object):
                     self.telecharge.show()
                     self.restant.show()
                     self.progressBar.show()
-                    stream.download(self.fileLine.text())
+                    self.yt.youtube_video.register_on_progress_callback(self.on_download_progress)
+                    stream1.download(self.fileLine.text())
+                    QtWidgets.QApplication.processEvents()
                 break
+    def on_download_progress(self,stream, chunk, bytes_remaining):
+        remaining = round(bytes_remaining / 1000000,1)
+        downloaded = round((stream.filesize - bytes_remaining) / 1000000,1)
+        percent = int((stream.filesize - bytes_remaining) / (stream.filesize / 100))
+        self.telecharge.setText(f"{downloaded} Mo")
+        self.restant.setText(f"{remaining} Mo")
+        self.progressBar.setValue(percent)
+        self.progressBar.setFormat(f"{percent} %")
+        QtWidgets.QApplication.processEvents()
+        
+        
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

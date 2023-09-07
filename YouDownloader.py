@@ -1,5 +1,6 @@
 from pytube import YouTube
 
+
 class Download:
     def __init__(self,url):
         """
@@ -10,6 +11,7 @@ class Download:
         self.youtube_video = YouTube(self.url)
         self.streams = self.youtube_video.streams
         self.VideoTitle()
+    
     def VideoTitle(self):
         self.titleText = self.youtube_video.title
         return self.titleText

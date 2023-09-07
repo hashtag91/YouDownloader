@@ -63,7 +63,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>:/icons/download.svg</pixmap>
+           <pixmap resource="ico.qrc">:/icons/ico/download.svg</pixmap>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -181,7 +181,7 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap>:/icons/website-https-4951.svg</pixmap>
+              <pixmap resource="ico.qrc">:/icons/ico/website-https-4951.svg</pixmap>
              </property>
              <property name="scaledContents">
               <bool>true</bool>
