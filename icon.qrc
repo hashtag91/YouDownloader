@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="ico">
+    <file>ico/youtube.png</file>
+    <file>ico/arrow-right.svg</file>
+    <file>ico/down.svg</file>
+    <file>ico/up.svg</file>
+    <file>ico/folder.svg</file>
+    <file>ico/website-https-4951.svg</file>
+    <file>ico/download.svg</file>
+  </qresource>
+</RCC>

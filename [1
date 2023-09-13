@@ -1,0 +1,41 @@
+[33mcommit 42f5fe02ceb124d8927abbd83001d5d5e284a16c[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: hashtag91 <camarayacouba91@gmail.com>
+Date:   Thu Sep 7 02:11:11 2023 +0000
+
+    Création de la fonction on_download_progress pour la configuration de la barre de progression et des labels téléchargé et restant
+
+[33mcommit 8fd6297794702d964a8c1a2abb8f03e0f145575c[m
+Author: hashtag91 <camarayacouba91@gmail.com>
+Date:   Wed Sep 6 07:29:25 2023 +0000
+
+    Configuration partielle du button telechargement
+
+[33mcommit 06b0f52530f2f02aec76e5a87776b9b2948f93f2[m
+Author: hashtag91 <camarayacouba91@gmail.com>
+Date:   Wed Sep 6 04:34:38 2023 +0000
+
+    Recuperation et affichage de la taille de la vidéo
+
+[33mcommit ff65acf16e618b4adb237b59d4e460081357222d[m
+Author: hashtag91 <camarayacouba91@gmail.com>
+Date:   Mon Sep 4 06:03:46 2023 +0000
+
+    Creation et trie des listes de resolutions vidéo et types vidéos ainsi que la selection de l'index itag à partir des données de resolutionCombo et de comboBox(type video)
+
+[33mcommit d5867ff51979d3861a11d4123d89de56dd19ff39[m
+Author: hashtag91 <camarayacouba91@gmail.com>
+Date:   Sat Sep 2 22:05:37 2023 +0000
+
+    Ajout de l'option 'type de video' à l'interface et la creation de la classe 'Download' dans le document YouDownloader.py pour la récuperation des index itag
+
+[33mcommit 069c3f5718b6d51f4b1d36ee2368b844c50ad5fc[m
+Author: hashtag91 <camarayacouba91@gmail.com>
+Date:   Thu Aug 31 18:02:59 2023 +0000
+
+    User interface prepared
+
+[33mcommit 55513b358b80a98632510c3bd621fc8b14d78ab7[m
+Author: hashtag91 <camarayacouba91@gmail.com>
+Date:   Wed Aug 30 22:53:39 2023 +0000
+
+    Initial commit

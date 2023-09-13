@@ -1,8 +1,0 @@
-<RCC>
-  <qresource prefix="icons">
-    <file>ico/download.svg</file>
-    <file>ico/website-https-4951.svg</file>
-    <file>website-https-4951.svg</file>
-    <file>download.svg</file>
-  </qresource>
-</RCC>
