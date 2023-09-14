@@ -11,7 +11,7 @@ Pre-required python modules:
 * datetime
 
 Use:
-1- Copy and paste the url link of the youtube video into the text field
+1- Copy and paste the url link of the youtube video into the text field\n
 2- Click on the check button located to the right of the url field
 3- Wait for the relevant video information to load
 4- Select the desired resolution from the Resolution ComboBox
