@@ -7,6 +7,8 @@ import sys
 from pytube import YouTube, query
 import requests
 import speedtest
+import sqlite3
+import datetime
 
 class ThreadClass1(QThread):
     checkAction = pyqtSignal(list)
@@ -23,6 +25,7 @@ class ThreadClass1(QThread):
         self.data_list = [self.yt.title,itag_list,thumbnailurl]
         self.checkAction.emit(self.data_list)
         self.stream_info.emit(self.stream)
+        self.exit()
         
 class SpeedTextThread(QThread):
     speed = pyqtSignal(list)
@@ -52,15 +55,37 @@ class downloadThread(QThread):
         self.stream = self.yt.streams.get_by_itag(self.it)
         self.yt.register_on_progress_callback(self.progress)
         self.stream.download(self.path)
+        self.exit()
     def progress(self,stream, chunk, bytes_remaining):
-        percent = (stream.filesize - bytes_remaining) / (stream.filesize / 100)
+        percent = int((stream.filesize - bytes_remaining) / (stream.filesize / 100))
         self.percent_slot.emit(percent)
         
 class mainWindow(QMainWindow):
     def __init__(self):
         super(mainWindow,self).__init__()
         uic.loadUi('MainWindow.ui',self,resource_suffix='qrc')
+        self.resize(600,400)
         self.res_list = {17:"144p",18:"360p",22:"720p",137:"1080p",140:"Audio"}
+        self.download_btn.setEnabled(False)
+        self.thumbnail.hide()
+        self.video_title.hide()
+        self.video_title_text.hide()
+        self.resolution_label.hide()
+        self.resolution.hide()
+        self.size_label.hide()
+        self.size_label_text.hide()
+        self.file_frame.hide()
+        self.label_4.hide()
+        self.upload_label.hide()
+        self.label_2.hide()
+        self.progressBar.hide()
+        self.download_label.show()
+        self.tableWidget.setColumnCount(4)
+        self.tableWidget.setColumnWidth(0,200)
+        self.tableWidget.setColumnWidth(1,200)
+        self.tableWidget.setColumnWidth(2,150)
+        self.tableWidget.setHorizontalHeaderLabels(['Url','Title','Path','Date'])
+        self.hostory_func()
         self.itag = 0
         sp = SpeedTextThread()
         sp.speed.connect(self.speedtext_func)
@@ -70,6 +95,7 @@ class mainWindow(QMainWindow):
         self.stream = query.StreamQuery
         self.file_button.clicked.connect(self.download_folder_func)
         self.download_btn.clicked.connect(self.download_func)
+        self.db_data = []
         self.show()
         
     def check_fun(self):
@@ -87,6 +113,16 @@ class mainWindow(QMainWindow):
             image = QImage()
             image.loadFromData(requests.get(f"{info[2]}").content)
             self.thumbnail.setPixmap(QPixmap(image))
+            self.thumbnail.show()
+            self.video_title.show()
+            self.video_title_text.show()
+            self.resolution_label.show()
+            self.resolution.show()
+            self.size_label.show()
+            self.size_label_text.show()
+            self.file_frame.show()
+            self.resize(600,600)
+            self.download_btn.setEnabled(True)
         except:
             self.console_browser.append("<span style='color: red;'>Something went wrong</span>")
     
@@ -111,30 +147,33 @@ class mainWindow(QMainWindow):
         if len(val) == 2:
             self.download_label.setText(f"{val[0]} Mbit/s")
             self.upload_label.setText(f"{val[1]} Mbit/s")
+            self.label_4.show()
+            self.upload_label.show()
+            self.label_2.show()
+            self.download_label.show()
         else:
             self.console_browser.append(f"<span style='color: red;'>{val[0]}</span>")
-    """        
-    def progress_func(self, chunk, bytes_remaining):
-            progress = progressThread(self.itag)
-            progress.progress.connect(self.progress_func_off)
-            progress.start()
-    def progress_func_off(self,val):
-        self.progressBar.setValue(val)
-"""
+            
     def download_func(self):
         if self.directory_line.text() == "":
             self.download_folder_func()
             self.console_browser.append(f"<span style='color: black;'>Downloading... </span>")
+            self.progressBar.show()
             self.progressBar.setFormat("Download preparing...")
+            self.db_connexion()
             self.dl = downloadThread(self.search_line.text(),self.itag,self.directory_line.text())
             self.dl.percent_slot.connect(self.progress_func)
             self.dl.start()
+            self.hostory_func()
         else:
             self.console_browser.append(f"<span style='color: black;'>Downloading... </span>")
+            self.progressBar.show()
             self.progressBar.setFormat("Download preparing...")
+            self.db_connexion()
             self.dl = downloadThread(self.search_line.text(),self.itag,self.directory_line.text())
             self.dl.percent_slot.connect(self.progress_func)
             self.dl.start()
+            self.hostory_func()
     def progress_func(self,val):
         self.progressBar.setFormat("Preparing to download...")
         if val < 99:
@@ -144,6 +183,36 @@ class mainWindow(QMainWindow):
             self.progressBar.setValue(100)
             self.progressBar.setFormat("Completed")
             self.console_browser.append(f"<span style='color: green;'>Download completed succefully ! </span>")
+    
+    def hostory_func(self):
+        self.tableWidget.clear()
+        con = sqlite3.connect('history.db')
+        cur = con.cursor()
+        req = ("SELECT * FROM histories")
+        data = cur.execute(req).fetchall()
+        con.commit()
+        con.close()
+        self.tableWidget.setRowCount(len(data))
+        row = 0
+        col = 0
+        for i in data:
+            for x in i:
+                self.tableWidget.setItem(row,col,QTableWidgetItem(x))
+                col += 1
+            col= 0
+            row += 1
+    def db_connexion(self):
+        url = self.search_line.text()
+        title = self.video_title_text.text()
+        path_text = self.directory_line.text()
+        date = str(datetime.datetime.now())
+        self.db_data = [url, title, path_text, date]
+        con = sqlite3.connect("history.db")
+        cur = con.cursor()
+        req = ("INSERT INTO histories (url,title,path,date) VALUES(?,?,?,?)")
+        cur.execute(req, self.db_data)
+        con.commit()
+        con.close()
         
 if __name__ == "__main__":
     App = QApplication(sys.argv)
